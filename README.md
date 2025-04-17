@@ -111,9 +111,9 @@ $ nest g service users
 $ nest g controller users
 
 $ npm install bcryptjs
+$ npm i --save class-validator class-transformer # ou $ npm i @nestjs/class-validator@0.13.1
+$ npm i @nestjs/mapped-types
 
-# test coverage
-$ npm run test:cov
 ```
 
 
