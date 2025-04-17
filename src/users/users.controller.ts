@@ -1,4 +1,4 @@
-import { Controller, Post, Body, BadRequestException, NotFoundException, Get, Param, Patch, Delete  } from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException, NotFoundException, Get, Param, Patch, Delete, Put  } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserDocument } from './schemas/user.schema';
 
@@ -42,7 +42,7 @@ async findOne(@Param('id') id: string) {
   return user;
 }
 
-@Patch(':id')
+@Put(':id')
 async update(@Param('id') id: string, @Body() body: Partial<{ name: string; email: string; password: string }>) {
   const updated = await this.usersService.update(id, body);
   return {

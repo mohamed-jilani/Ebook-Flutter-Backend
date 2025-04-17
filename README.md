@@ -124,9 +124,9 @@ nest g module books
 nest g controller books
 nest g service books
 
-nest g module categories
-nest g controller categories
-nest g service categories
+nest g module category
+nest g controller category
+nest g service category
 
 nest g module auth
 nest g controller auth
