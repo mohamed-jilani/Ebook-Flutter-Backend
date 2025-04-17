@@ -96,3 +96,50 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+
+## Creation CMD Steps
+
+```bash
+# ✅ Étape 1 : Installer Mongoose
+$ npm install @nestjs/mongoose mongoose
+
+# ✅ Étape 2 : Créer le module d'authentification + utilisateur
+$ nest g module users
+$ nest g service users
+$ nest g controller users
+
+$ npm install bcryptjs
+
+# test coverage
+$ npm run test:cov
+```
+
+
+
+
+
+nest g module books
+nest g controller books
+nest g service books
+
+nest g module categories
+nest g controller categories
+nest g service categories
+
+nest g module auth
+nest g controller auth
+nest g service auth
+
+nest g module users
+nest g controller users
+nest g service users
+
+nest g module cart
+nest g controller cart
+nest g service cart
+
+nest g module orders
+nest g controller orders
+nest g service orders
