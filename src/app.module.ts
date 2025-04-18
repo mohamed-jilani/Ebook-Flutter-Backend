@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CategoryModule } from './category/category.module';
 import { BooksModule } from './books/books.module';
+import { CartModule } from './cart/cart.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { BooksModule } from './books/books.module';
     AuthModule,
     CategoryModule,
     BooksModule,
+    CartModule,
+    OrdersModule,
 
   ],
   controllers: [AppController],
