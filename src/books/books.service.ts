@@ -4,16 +4,36 @@ import { Model } from 'mongoose';
 import { Book, BookDocument } from './schemas/book.schema';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 
 @Injectable()
 export class BooksService {
   constructor(
     @InjectModel(Book.name) private bookModel: Model<BookDocument>,
+    private cloudinaryService: CloudinaryService,
   ) {}
 
-  async create(createBookDto: CreateBookDto): Promise<Book> {
+  async create1(createBookDto: CreateBookDto): Promise<Book> {
     const createdBook = new this.bookModel(createBookDto);
     return createdBook.save();
+  }
+
+  
+  async create(
+    createBookDto: CreateBookDto,
+    file?: Express.Multer.File,
+  ): Promise<Book> {
+    try {
+      if (file) {
+        createBookDto.coverUrl = await this.cloudinaryService.uploadImage(file);
+      }
+
+      const createdBook = new this.bookModel(createBookDto);
+      return createdBook.save();
+    } catch (error) {
+      console.error('Error creating book:', error);
+      throw error; // ou gérer l'erreur de manière plus spécifique
+    }
   }
 
   async findAll(): Promise<Book[]> {

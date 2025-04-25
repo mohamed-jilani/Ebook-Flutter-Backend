@@ -143,3 +143,10 @@ nest g service cart
 nest g module orders
 nest g controller orders
 nest g service orders
+
+nest g service cloudinary
+nest g module cloudinary
+nest g controller cloudinary
+
+npm install @nestjs/platform-express multer cloudinary @nestjs/serve-static
+npm install @types/multer --save-dev
