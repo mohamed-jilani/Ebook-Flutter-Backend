@@ -13,7 +13,7 @@ import {
   export class CartController {
     constructor(private readonly cartService: CartService) {}
   
-    @Post()
+    @Post('add')
     async addToCart(
       @Body()
       body: {

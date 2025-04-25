@@ -9,6 +9,7 @@ export class AuthService {
 
   async validateUser(email: string, pass: string) {
     const user = await this.usersService.findByEmail(email) as UserDocument;
+    console.log(user);
     if (!user) throw new UnauthorizedException('Email incorrect');
 
     const isMatch = await bcrypt.compare(pass, user.password);
@@ -19,6 +20,7 @@ export class AuthService {
       id: user._id,
       name: user.name,
       email: user.email,
+      role: user.role,
     };
   }
 }

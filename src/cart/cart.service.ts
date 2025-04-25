@@ -11,7 +11,7 @@ export class CartService {
     @InjectModel(CartItem.name) private readonly cartItemModel: Model<CartItemDocument>,
   ) {}
 
-  async addToCart(userId: string, items: any[]): Promise<Cart> {
+  async addToCart0(userId: string, items: any[]): Promise<Cart> {
     const savedCartItems: Types.ObjectId[] = [];
 
     for (const item of items) {
@@ -23,7 +23,7 @@ export class CartService {
       const savedItem = await cartItem.save();
       savedCartItems.push(savedItem._id as Types.ObjectId);
     }
-
+    
     const cart = new this.cartModel({
       userId,
       items: savedCartItems,
@@ -31,10 +31,48 @@ export class CartService {
 
     return cart.save();
   }
+  async addToCart(userId: string, items: any[]): Promise<Cart> {
+    let cart = await this.cartModel.findOne({ userId });
+  
+    if (!cart) {
+      // Créer un panier vide si non existant
+      cart = new this.cartModel({ userId, items: [] });
+      await cart.save();
+    }
+  
+    for (const item of items) {
+      const existingItem = await this.cartItemModel.findOne({
+        _id: { $in: cart.items },
+        bookId: item.bookId,
+      });
+  
+      if (existingItem) {
+        // Augmenter la quantité si l’item existe déjà
+        existingItem.quantity += item.quantity;
+        await existingItem.save();
+      } else {
+        // Sinon créer un nouveau CartItem
+        const newItem = new this.cartItemModel({
+          bookId: item.bookId,
+          quantity: item.quantity,
+        });
+        const savedItem = await newItem.save();
+        cart.items.push(savedItem._id as Types.ObjectId);
+      }
+    }
+  
+    await cart.save();
+  
+    return cart.populate({
+      path: 'items',
+      populate: { path: 'bookId' }
+    });
+  }
+  
 
   async getCart(userId: string): Promise<Cart> {
     const cart = await this.cartModel
-      .findOne({ userId })
+      .findOne({ userId: userId })
       .populate({
         path: 'items',
         populate: { path: 'bookId' },

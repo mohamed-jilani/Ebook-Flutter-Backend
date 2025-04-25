@@ -7,9 +7,11 @@ import { Order, OrderDocument } from './schemas/order.schema';
 export class OrderService {
   constructor(
     @InjectModel(Order.name) private readonly orderModel: Model<OrderDocument>,
-  ) {}
+    @InjectModel('Cart') private readonly cartModel: Model<any>, 
+    @InjectModel('Book') private readonly bookModel: Model<any>, 
+    ) {}
 
-  async placeOrder(userId: string, items: { bookId: string; quantity: number }[], totalPrice: number): Promise<Order> {
+  async placeOrder1(userId: string, items: { bookId: string; quantity: number }[], totalPrice: number): Promise<Order> {
     const newOrder = new this.orderModel({
       userId,
       items,
@@ -18,6 +20,42 @@ export class OrderService {
     });
     return newOrder.save();
   }
+  async placeOrder(userId: string): Promise<Order> {
+    const cart = await this.cartModel.findOne({ userId }).populate('items');
+  
+    if (!cart || cart.items.length === 0) {
+      throw new NotFoundException('Cart is empty or not found');
+    }
+  
+    const orderItems: { bookId: Types.ObjectId; quantity: number }[] = [];
+    let totalPrice = 0;
+  
+    for (const cartItem of cart.items) {
+      const book = await this.bookModel.findById(cartItem.bookId);
+      if (!book) continue;
+  
+      orderItems.push({
+        bookId: book._id as Types.ObjectId,
+        quantity: cartItem.quantity as number,
+      });
+  
+      totalPrice += book.price * cartItem.quantity;
+    }
+  
+    const newOrder = new this.orderModel({
+      userId,
+      items: orderItems,
+      totalPrice,
+      status: 'pending',
+    });
+  
+    // Optionnel : vider le panier après la commande
+    cart.items = [];
+    await cart.save();
+  
+    return newOrder.save();
+  }
+  
 
   async getOrdersByUser(userId: string): Promise<Order[]> {
     return this.orderModel.find({ userId }).populate('items.bookId');

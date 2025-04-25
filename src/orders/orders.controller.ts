@@ -7,13 +7,21 @@ export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post()
-  async placeOrder(
+  async placeOrder1(
     @Body('userId') userId: string,
     @Body('items') items: { bookId: string; quantity: number }[],
     @Body('totalPrice') totalPrice: number,
   ): Promise<Order> {
-    return this.orderService.placeOrder(userId, items, totalPrice);
+    return this.orderService.placeOrder1(userId, items, totalPrice);
   }
+
+  @Post("place")
+  async placeOrder(
+    @Body('userId') userId: string,
+  ): Promise<Order> {
+    return this.orderService.placeOrder(userId);
+  }
+
 
   @Get('user/:userId')
   async getUserOrders(@Param('userId') userId: string): Promise<Order[]> {

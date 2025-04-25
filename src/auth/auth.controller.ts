@@ -11,11 +11,12 @@ export class AuthController {
         @Body() body: { email: string; password: string }
     ) {
         const { email, password } = body;
-        const user = await this.authService.validateUser(email, password) as UserDocument;
+        const user = await this.authService.validateUser(email, password);
+        console.log(user);
         return {
             message: 'Connexion réussie',
             user: {
-                id: user._id,
+                id: user.id,
                 name: user.name,
                 email: user.email,
                 role: user.role,
