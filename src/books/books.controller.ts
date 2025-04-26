@@ -33,10 +33,22 @@ export class BooksController {
     return this.booksService.findOne(id);
   }
 
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
-    return this.booksService.update(id, updateBookDto);
+  @Put('update1/:id')
+  update1(@Param('id') id: string, @Body() updateBookDto: UpdateBookDto) {
+    return this.booksService.update1(id, updateBookDto);
   }
+
+  @Put(':id')
+  @UseInterceptors(FileInterceptor('cover')) 
+  async update(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') id: string, 
+    @Body() updateBookDto: UpdateBookDto,
+  ): Promise<Book> {
+    return this.booksService.update(id, updateBookDto, file);
+  }
+
+
 
   @Delete(':id')
   remove(@Param('id') id: string) {

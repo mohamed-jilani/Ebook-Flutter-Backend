@@ -11,6 +11,21 @@ export class CategoryService {
     const category = new this.categoryModel(data);
     return category.save();
   }
+  async createBulk(categories: Partial<Category>[]) {
+    // Solution 1: InsertMany (plus performant)
+    return this.categoryModel.insertMany(categories, { ordered: false });
+    
+    /* 
+    // Solution 2: Avec validation et hooks (si nécessaire)
+    const createdCategories = await Promise.all(
+      categories.map(cat => {
+        const category = new this.categoryModel(cat);
+        return category.save();
+      })
+    );
+    return createdCategories;
+    */
+  }
 
   async findAll() {
     return this.categoryModel.find();

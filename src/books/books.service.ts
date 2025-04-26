@@ -46,10 +46,29 @@ export class BooksService {
     return book;
   }
 
-  async update(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
+  async update1(id: string, updateBookDto: UpdateBookDto): Promise<Book> {
     const updatedBook = await this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true });
     if (!updatedBook) throw new NotFoundException('Book not found');
     return updatedBook;
+  }
+
+  async update(
+    id: string, 
+    updateBookDto: UpdateBookDto,
+    file?: Express.Multer.File,
+  ): Promise<Book> {
+    try {
+      if (file) {
+        updateBookDto.coverUrl = await this.cloudinaryService.uploadImage(file);
+      }
+
+      const updatedBook = await this.bookModel.findByIdAndUpdate(id, updateBookDto, { new: true });
+      if (!updatedBook) throw new NotFoundException('Book not found');
+      return updatedBook;
+    } catch (error) {
+      console.error('Error updating book:', error);
+      throw error; 
+    }
   }
 
   async remove(id: string): Promise<Book> {

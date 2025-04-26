@@ -9,6 +9,12 @@ export class CategoryController {
   async create(@Body() body: { name: string; description?: string }) {
     return this.categoryService.create(body);
   }
+  
+  // Nouvelle méthode pour plusieurs catégories
+  @Post('bulk')
+  async createBulk(@Body() categories: { name: string; description?: string }[]) {
+    return this.categoryService.createBulk(categories);
+  }
 
   @Get()
   async findAll() {
